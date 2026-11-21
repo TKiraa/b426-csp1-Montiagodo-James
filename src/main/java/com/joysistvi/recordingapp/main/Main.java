@@ -6,7 +6,7 @@ import java.sql.*;
 
 public class Main {
 
-    static String url = "jdbc:mysql://localhost:3306/recordin_studio_db";
+    static String url = "jdbc:mysql://localhost:3306/recording_studio_db";
     static String username = "root";
     static String password = "";
 
