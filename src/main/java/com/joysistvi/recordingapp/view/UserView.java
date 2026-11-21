@@ -14,6 +14,36 @@ public class UserView {
         this.scanner = scanner;
     }
 
+    public void handleUserMenu() {
+        while (true) {
+            System.out.println("\n=== MANAGE User ===");
+            System.out.println("1. View All User");
+            System.out.println("2. Create User");
+            System.out.println("3. Update User");
+            System.out.println("4. Search User");
+            System.out.println("5. Archive User");
+            System.out.println("6. Restore User");
+            System.out.println("7. Delete User");
+            System.out.println("0. Back");
+
+            int choice = promptForInt("Choose an option: ");
+
+            switch (choice) {
+                case 1 -> displayAllUsers();
+                case 2 -> promptCreateUser();
+                case 3 -> promptUpdateUser();
+                case 4 -> promptSearchUsers();
+                case 5 -> promptArchiveUser();
+                case 6 -> promptRestoreUser();
+                case 7 -> promptDeleteUser();
+                case 0 -> {
+                    return;
+                }
+                default -> System.out.println("Invalid option. Please try again.");
+            }
+        }
+    }
+
     public User promptLogin() {
         System.out.println("\n=== LOGIN ===");
         System.out.print("Enter username: ");

@@ -2,10 +2,9 @@ package com.joysistvi.recordingapp.service;
 
 import com.joysistvi.recordingapp.model.User;
 import com.joysistvi.recordingapp.repository.UserRepository;
-import org.mindrot.jbcrypt.BCrypt;
-
 import java.util.ArrayList;
 import java.util.List;
+import org.mindrot.jbcrypt.BCrypt;
 
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;

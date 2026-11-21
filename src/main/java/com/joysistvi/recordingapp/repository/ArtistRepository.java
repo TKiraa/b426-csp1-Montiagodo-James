@@ -7,12 +7,12 @@ import java.util.List;
 // Repository(Data Tier) -> Data Access Logic and Data Persistence
 public interface ArtistRepository {
 
-    public List<Artist> findAllActive();
-    public List<Artist> findAllArchived();
-    public boolean save(Artist artist);
-    public boolean update(Artist artist);
-    public boolean deleteById(int id);
-    public boolean archiveById(int id);
-    public boolean restoreById(int id);
-    public List<Artist> searchByName(String keyword);
+    List<Artist> findAllActive();
+    List<Artist> findAllArchived();
+    boolean save(Artist artist);
+    boolean update(Artist artist);
+    boolean deleteById(int id);
+    boolean archiveById(int id);
+    boolean restoreById(int id);
+    List<Artist> searchByName(String keyword);
 }

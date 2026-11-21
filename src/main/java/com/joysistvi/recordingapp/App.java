@@ -1,10 +1,12 @@
 package com.joysistvi.recordingapp;
 
 import com.joysistvi.recordingapp.config.DbConnection;
+import com.joysistvi.recordingapp.model.User;
 import com.joysistvi.recordingapp.repository.*;
 import com.joysistvi.recordingapp.service.*;
 import com.joysistvi.recordingapp.view.AlbumView;
 import com.joysistvi.recordingapp.view.ArtistView;
+import com.joysistvi.recordingapp.view.SongView;
 import com.joysistvi.recordingapp.view.UserView;
 
 import java.util.Scanner;
@@ -12,59 +14,127 @@ import java.util.Scanner;
 // Entry Point
 public class App {
 
+    DbConnection dbConnection = new DbConnection();
+    Scanner scanner = new Scanner(System.in);
+
+    SongRepository songRepository = new SongRepositoryImpl(dbConnection);
+    SongService songService = new SongServiceImpl(songRepository);
+    SongView songView = new SongView(songService, scanner);
+
+    // Wiring
+    // 1. Wire Artist (Repository -> Service -> View)
+    ArtistRepository artistRepository = new ArtistRepositoryImpl(dbConnection);
+    ArtistService artistService = new ArtistServiceImpl(artistRepository);
+    ArtistView artistView = new ArtistView(artistService, scanner);
+
+    // 2. Wire Album (Repository -> Service -> View)
+    AlbumRepository albumRepository = new AlbumRepositoryImpl(dbConnection);
+    AlbumService albumService = new AlbumServiceImpl(albumRepository);
+    AlbumView albumView = new AlbumView(albumService, scanner);
+
+    // 3. Wire User (Repository -> Service -> View)
+    UserRepository userRepository = new UserRepositoryImpl(dbConnection);
+    UserService userService = new UserServiceImpl(userRepository);
+    UserView userView = new UserView(userService, scanner);
+
     public static void main(String[] args) {
-        DbConnection dbConnection = new DbConnection();
-        Scanner scanner = new Scanner(System.in);
-        // Wiring
-        ArtistRepository artistRepository = new ArtistRepositoryImpl(dbConnection);
-        ArtistService artistService = new ArtistServiceImpl(artistRepository);
-        ArtistView artistView = new ArtistView(artistService, scanner);
+        App app = new App();
+        app.run();
 
-        AlbumRepository albumRepository = new AlbumRepositoryImpl(dbConnection);
-        AlbumService albumService = new AlbumServiceImpl(albumRepository);
-        AlbumView albumView = new AlbumView(albumService, scanner);
+    }
 
-        UserRepository userRepository = new UserRepositoryImpl(dbConnection);
-        UserService userService = new UserServiceImpl(userRepository);
-        UserView userView = new UserView(userService, scanner);
+    public void run() {
+
+        while (true) {
+            User currentUser = showAuthMenuAndAuthenticate();
+            if (currentUser == null) {
+                System.out.println("\nExiting Recording Studio App. Goodbye!");
+                break;
+            }
+
+            // Any logged-in user enter the album menu
+            System.out.println("\nWelcome, " + currentUser.getUsername() + " (" + currentUser.getRole() + ")!");
+            dashboard();
+            System.out.println("\nLogged out " + currentUser.getUsername() + ".");
+        }
+    }
+
+    // Authorization vs Authentication
+    private void dashboard(){
+            System.out.println("\n=== RECORDING STUDIO DASHBOARD ===");
+            System.out.println("1. Song Management");
+            System.out.println("2. Artist Management");
+            System.out.println("3. Album Management");
+            System.out.println("4. Users Management");
+            System.out.println("0. Logout");
+
+            int choice = promptForInt("Choice: ");
+
+            switch (choice) {
+                case 1 -> songView.handleSongMenu();
+                case 2 -> artistView.handleArtistMenu();
+                case 3 -> albumView.handleAlbumMenu();
+                case 4 -> userView.handleUserMenu();
+                case 0 -> { return; }
+                default -> System.out.println("Invalid choice. Please try again.");
+        }
+    }
+
+    private User showAuthMenuAndAuthenticate() {
+
+        while (true) {
+            System.out.println("\n=== RECORDING STUDIO APP ===");
+            System.out.println("1. Login");
+            System.out.println("2. Register Account");
+            System.out.println("0. Exit");
+
+            int choice = promptForInt("Choose an option: ");
+            switch (choice) {
+                case 1:
+                    User loggedInUser = userView.promptLogin();
+
+                    if (loggedInUser != null ) {
+                        return loggedInUser;
+                    }
+                    break;
+
+                case 2:
+                    userView.promptCreateUser();
+                    break;
+                case 0:
+                    return null;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
+            }
+        }
+    }
 
 
-        // Artist flow: Read, Create, Search, Update, Archive, Restore, Delete
-//        artistView.displayAllArtists();
-//        artistView.promptCreateArtist();
-//        artistView.promptSearchArtists();
-//        artistView.promptUpdateArtist();
-//        artistView.promptArchiveArtist();
-//        artistView.promptRestoreArtist();
-//        artistView.promptDeleteArtist();
-//
-//        // Album flow: Read, Create, Search, Update, Archive, Restore, Delete
-        albumView.displayAllAlbums();
-//        albumView.promptCreateAlbum();
-//        albumView.promptSearchAlbums();
-//        albumView.promptUpdateAlbum();
-//        albumView.promptArchiveAlbum();
-//        albumView.promptRestoreAlbum();
-//        albumView.promptDeleteAlbum();
-//
-//        // User flow: Register/Create, Login, Read, Search, Update, Archive, Restore, Delete
-//        userView.promptCreateUser();
-//        userView.promptLogin();
-        userView.displayAllUsers();
-//        userView.promptSearchUsers();
-//        userView.promptUpdateUser();
-//        userView.promptArchiveUser();
-//        userView.promptRestoreUser();
-//        userView.promptDeleteUser();
 
-        scanner.close();
+    private int promptForInt(String promptMessage) {
+        while (true) {
+            System.out.print(promptMessage);
+            String input = scanner.nextLine().trim();
+            try {
+                return Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println("Invalid input. Please enter a valid number.");
+            }
+        }
     }
 }
 
 
 
 /*
-// APPLICATION FLOW
+===============================================================================
+                             Build &  Wiring Order (Bottom-Up)
+===============================================================================
+
+    Model
+    │
+    ▼
     Repository
      │
      ▼
@@ -74,7 +144,39 @@ public class App {
     View
      │
      ▼
-    Main Application
+    Main Application (App)
+
+    /*
+===============================================================================
+                    DATA FLOW (Top-Down)
+===============================================================================
+
+REQUEST FLOW (Save / Insert / Update / Delete)
+
+User/App
+  ↓
+View
+  ↓
+Service
+  ↓
+Repository (DAO)
+  ↓
+Database
+
+
+RESPONSE FLOW (Retrieve / Search)
+
+Database
+  ↓
+Repository (DAO)
+  ↓
+Service
+  ↓
+View
+  ↓
+User
+
+
 
 
 Dependency Wiring:
@@ -91,4 +193,11 @@ ArtistView
         │
         ▼
 App.main()
+
+Dependency Flow
+View → Service → Repository → Database
+
+Data Flow
+User → View → Service → Repository → Database
+Database → Repository → Service → View → User
  */
