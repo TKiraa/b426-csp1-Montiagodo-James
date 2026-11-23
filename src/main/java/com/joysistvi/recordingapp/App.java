@@ -8,6 +8,7 @@ import com.joysistvi.recordingapp.view.AlbumView;
 import com.joysistvi.recordingapp.view.ArtistView;
 import com.joysistvi.recordingapp.view.SongView;
 import com.joysistvi.recordingapp.view.UserView;
+import com.joysistvi.recordingapp.view.PlaylistView;
 
 import java.util.Scanner;
 
@@ -16,10 +17,6 @@ public class App {
 
     DbConnection dbConnection = new DbConnection();
     Scanner scanner = new Scanner(System.in);
-
-    SongRepository songRepository = new SongRepositoryImpl(dbConnection);
-    SongService songService = new SongServiceImpl(songRepository);
-    SongView songView = new SongView(songService, scanner);
 
     // Wiring
     // 1. Wire Artist (Repository -> Service -> View)
@@ -36,6 +33,14 @@ public class App {
     UserRepository userRepository = new UserRepositoryImpl(dbConnection);
     UserService userService = new UserServiceImpl(userRepository);
     UserView userView = new UserView(userService, scanner);
+
+    SongRepository songRepository = new SongRepositoryImpl(dbConnection);
+    SongService songService = new SongServiceImpl(songRepository);
+    SongView songView = new SongView(songService, scanner);
+
+    PlaylistRepository playlistRepository = new PlaylistRepositoryImpl(dbConnection);
+    PlaylistService playlistService = new PlaylistServiceImpl(playlistRepository);
+    PlaylistView playlistView = new PlaylistView(playlistService, scanner);
 
     public static void main(String[] args) {
         App app = new App();
@@ -61,11 +66,13 @@ public class App {
 
     // Authorization vs Authentication
     private void dashboard(){
+        while (true) {
             System.out.println("\n=== RECORDING STUDIO DASHBOARD ===");
             System.out.println("1. Song Management");
             System.out.println("2. Artist Management");
             System.out.println("3. Album Management");
             System.out.println("4. Users Management");
+            System.out.println("5. Playlist Management");
             System.out.println("0. Logout");
 
             int choice = promptForInt("Choice: ");
@@ -75,8 +82,10 @@ public class App {
                 case 2 -> artistView.handleArtistMenu();
                 case 3 -> albumView.handleAlbumMenu();
                 case 4 -> userView.handleUserMenu();
+                case 5 -> playlistView.handlePlaylistMenu();
                 case 0 -> { return; }
                 default -> System.out.println("Invalid choice. Please try again.");
+            }
         }
     }
 

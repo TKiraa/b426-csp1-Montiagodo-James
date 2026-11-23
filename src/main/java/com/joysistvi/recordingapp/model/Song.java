@@ -4,20 +4,20 @@ public class Song {
     private int id;
     private String title;
     private int albumId;
-    private int duration;
+    private String duration;
     private boolean archived;
 
     public Song() {
     }
 
-    public Song(int id, String title, int albumId, int duration) {
+    public Song(int id, String title, int albumId, String duration) {
         this.id = id;
         this.title = title;
         this.albumId = albumId;
         this.duration = duration;
     }
 
-    public Song(String title, int albumId, int duration) {
+    public Song(String title, int albumId, String duration) {
         this.title = title;
         this.albumId = albumId;
         this.duration = duration;
@@ -46,11 +46,11 @@ public class Song {
         this.albumId = albumId;
     }
 
-    public int getDuration() {
+    public String getDuration() {
         return duration;
     }
 
-    public void setDuration(int duration) {
+    public void setDuration(String duration) {
         this.duration = duration;
     }
 

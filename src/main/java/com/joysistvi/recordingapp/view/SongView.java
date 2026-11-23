@@ -43,10 +43,7 @@ public class SongView {
     }
 
     public void displayAllSongs() {
-        printSongTable(
-                "\n----- Active Songs -----",
-                songService.getAllActiveSongs(),
-                "No active songs found."
+        printSongTable("\n----- Active Songs -----", songService.getAllActiveSongs(), "No active songs found."
         );
     }
 
@@ -57,7 +54,9 @@ public class SongView {
         String title = scanner.nextLine();
 
         int albumId = promptForInt("Enter album ID: ");
-        int duration = promptForInt("Enter song duration (in seconds): ");
+
+        System.out.print("Enter song duration (m:ss, e.g. 3:08): ");
+        String duration = scanner.nextLine();
 
         boolean created = songService.createSong(title, albumId, duration);
 
@@ -78,7 +77,9 @@ public class SongView {
         String title = scanner.nextLine();
 
         int albumId = promptForInt("Enter new album ID: ");
-        int duration = promptForInt("Enter new song duration (in seconds): ");
+
+        System.out.print("Enter new song duration (m:ss, e.g. 3:08): ");
+        String duration = scanner.nextLine();;
 
         boolean updated = songService.updateSong(id, title, albumId, duration);
 
@@ -162,7 +163,7 @@ public class SongView {
         }
 
         for (Song song : songs) {
-            System.out.printf("%-4d %-30s %-10d %-10d%n", song.getId(), song.getTitle(), song.getAlbumId(), song.getDuration());
+            System.out.printf("%-4d %-30s %-10d %-10s%n", song.getId(), song.getTitle(), song.getAlbumId(), song.getDuration());
         }
     }
 

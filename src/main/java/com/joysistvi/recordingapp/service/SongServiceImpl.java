@@ -23,7 +23,7 @@ public class SongServiceImpl implements SongService{
     }
 
     @Override
-    public boolean createSong(String title, int albumId, int duration) {
+    public boolean createSong(String title, int albumId, String duration) {
         if (title == null || title.isBlank()) {
             System.out.println("Song title cannot be empty.");
             return false;
@@ -34,8 +34,8 @@ public class SongServiceImpl implements SongService{
             return false;
         }
 
-        if (duration <= 0) {
-            System.out.println("Duration must be greater than 0.");
+        if (duration == null || duration.isBlank()) {
+            System.out.println("Duration cannot be empty.");
             return false;
         }
 
@@ -44,7 +44,7 @@ public class SongServiceImpl implements SongService{
     }
 
     @Override
-    public boolean updateSong(int id, String title, int albumId, int duration) {
+    public boolean updateSong(int id, String title, int albumId, String duration) {
         if (id <= 0) {
             System.out.println("Invalid song ID.");
             return false;
@@ -60,12 +60,12 @@ public class SongServiceImpl implements SongService{
             return false;
         }
 
-        if (duration <= 0) {
-            System.out.println("Duration must be greater than 0.");
+        if (duration == null || duration.isBlank()) {
+            System.out.println("Duration cannot be empty.");
             return false;
         }
 
-        Song song = new Song(id, title.trim(), albumId, duration);
+        Song song = new Song(id, title.trim(), albumId, duration.trim());
         return songRepository.update(song);
     }
 

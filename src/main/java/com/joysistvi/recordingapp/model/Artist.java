@@ -5,6 +5,7 @@ public class Artist {
 
     private int id;
     private String name;
+    private boolean archived;
 
     public Artist(String name) {
         this.name = name;
@@ -29,5 +30,13 @@ public class Artist {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public boolean getArchived() {
+        return archived;
+    }
+
+    public void setArchived(boolean archived) {
+        this.archived = archived;
     }
 }

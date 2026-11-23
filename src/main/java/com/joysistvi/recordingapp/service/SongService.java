@@ -6,8 +6,8 @@ import java.util.List;
 public interface SongService {
     List<Song> getAllActiveSongs();
     List<Song> getAllArchivedSongs();
-    boolean createSong(String title, int albumId, int duration);
-    boolean updateSong(int id, String title, int albumId, int duration);
+    boolean createSong(String title, int albumId, String duration);
+    boolean updateSong(int id, String title, int albumId, String duration);
     boolean deleteSong(int id);
     boolean archiveSong(int id);
     boolean restoreSong(int id);

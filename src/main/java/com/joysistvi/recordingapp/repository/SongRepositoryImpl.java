@@ -30,7 +30,7 @@ public class SongRepositoryImpl implements SongRepository {
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getInt("album_id"),
-                        rs.getInt("length")
+                        rs.getString("length")
                 ));
             }
         } catch (SQLException e) {
@@ -53,7 +53,7 @@ public class SongRepositoryImpl implements SongRepository {
                         rs.getInt("id"),
                         rs.getString("title"),
                         rs.getInt("album_id"),
-                        rs.getInt("length")
+                        rs.getString("length")
                 ));
             }
         } catch (SQLException e) {
@@ -70,7 +70,7 @@ public class SongRepositoryImpl implements SongRepository {
              PreparedStatement prep = conn.prepareStatement(query)) {
 
             prep.setString(1, song.getTitle());
-            prep.setInt(2, song.getDuration());
+            prep.setString(2, song.getDuration());
             prep.setInt(3, song.getAlbumId());
 
             return prep.executeUpdate() > 0;
@@ -88,7 +88,7 @@ public class SongRepositoryImpl implements SongRepository {
              PreparedStatement prep = conn.prepareStatement(query)) {
 
             prep.setString(1, song.getTitle());
-            prep.setInt(2, song.getDuration());
+            prep.setString(2, song.getDuration());
             prep.setInt(3, song.getAlbumId());
             prep.setInt(4, song.getId());
 
@@ -162,7 +162,7 @@ public class SongRepositoryImpl implements SongRepository {
                             rs.getInt("id"),
                             rs.getString("title"),
                             rs.getInt("album_id"),
-                            rs.getInt("length")
+                            rs.getString("length")
                     ));
                 }
             }
