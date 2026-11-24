@@ -2,10 +2,12 @@ package com.joysistvi.recordingapp.service;
 
 import com.joysistvi.recordingapp.model.Song;
 import com.joysistvi.recordingapp.repository.SongRepository;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
-public class SongServiceImpl implements SongService{
+public class SongServiceImpl implements SongService {
     private final SongRepository songRepository;
 
     public SongServiceImpl(SongRepository songRepository) {
@@ -23,89 +25,84 @@ public class SongServiceImpl implements SongService{
     }
 
     @Override
-    public boolean createSong(String title, int albumId, String duration) {
-        if (title == null || title.isBlank()) {
-            System.out.println("Song title cannot be empty.");
+    public boolean createSong(String title, String genre, String length, int albumId) {
+        if (!isValidSongInput(title, genre, length, albumId)) {
             return false;
         }
-
-        if (albumId <= 0) {
-            System.out.println("Invalid album ID.");
-            return false;
-        }
-
-        if (duration == null || duration.isBlank()) {
-            System.out.println("Duration cannot be empty.");
-            return false;
-        }
-
-        Song song = new Song(title.trim(), albumId, duration);
-        return songRepository.save(song);
+        return songRepository.save(new Song(0, title.trim(), genre.trim(), length.trim(), albumId, null));
     }
 
     @Override
-    public boolean updateSong(int id, String title, int albumId, String duration) {
+    public boolean updateSong(int id, String title, String genre, String length, int albumId) {
         if (id <= 0) {
-            System.out.println("Invalid song ID.");
+            System.out.println("Validation Error: Song ID must be positive.");
             return false;
         }
-
-        if (title == null || title.isBlank()) {
-            System.out.println("Song title cannot be empty.");
+        if (!isValidSongInput(title, genre, length, albumId)) {
             return false;
         }
-
-        if (albumId <= 0) {
-            System.out.println("Invalid album ID.");
-            return false;
-        }
-
-        if (duration == null || duration.isBlank()) {
-            System.out.println("Duration cannot be empty.");
-            return false;
-        }
-
-        Song song = new Song(id, title.trim(), albumId, duration.trim());
-        return songRepository.update(song);
+        return songRepository.update(new Song(id, title.trim(), genre.trim(), length.trim(), albumId, null));
     }
 
     @Override
     public boolean deleteSong(int id) {
         if (id <= 0) {
-            System.out.println("Invalid song ID.");
+            System.out.println("Validation Error: Song ID must be positive.");
             return false;
         }
-
         return songRepository.deleteById(id);
     }
 
     @Override
     public boolean archiveSong(int id) {
         if (id <= 0) {
-            System.out.println("Invalid song ID.");
+            System.out.println("Validation Error: Song ID must be positive.");
             return false;
         }
-
         return songRepository.archiveById(id);
     }
 
     @Override
     public boolean restoreSong(int id) {
         if (id <= 0) {
-            System.out.println("Invalid song ID.");
+            System.out.println("Validation Error: Song ID must be positive.");
             return false;
         }
-
         return songRepository.restoreById(id);
     }
 
     @Override
     public List<Song> searchSongs(String keyword) {
-        if (keyword == null || keyword.isBlank()) {
-            System.out.println("Search keyword cannot be empty.");
+        if (keyword == null || keyword.trim().isEmpty()) {
+            System.out.println("Validation Error: Search keyword cannot be blank.");
             return new ArrayList<>();
         }
 
-        return songRepository.searchByTitle(keyword.trim());
+        List<Song> results = songRepository.searchByTitle(keyword.trim());
+        if (results != null) {
+            return results;
+        } else {
+            return new ArrayList<>();
+        }
+    }
+
+    private boolean isValidSongInput(String title, String genre, String length, int albumId) {
+        if (title == null || title.trim().isEmpty()) {
+            System.out.println("Validation Error: Song title cannot be blank.");
+            return false;
+        }
+        if (genre == null || genre.trim().isEmpty()) {
+            System.out.println("Validation Error: Genre cannot be blank.");
+            return false;
+        }
+        if (length == null || length.trim().isEmpty()) {
+            System.out.println("Validation Error: Song length cannot be blank.");
+            return false;
+        }
+        if (albumId <= 0) {
+            System.out.println("Validation Error: Album ID must be positive.");
+            return false;
+        }
+        return true;
     }
 }

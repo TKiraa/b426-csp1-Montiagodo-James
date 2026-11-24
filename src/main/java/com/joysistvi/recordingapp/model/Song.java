@@ -3,29 +3,38 @@ package com.joysistvi.recordingapp.model;
 public class Song {
     private int id;
     private String title;
+    private String genre;
+    private String length;
     private int albumId;
-    private String duration;
+    private String albumName;
     private boolean archived;
 
     public Song() {
     }
 
-    public Song(int id, String title, int albumId, String duration) {
+    public Song(int id, String title, String genre, String length, int albumId, String albumName) {
         this.id = id;
         this.title = title;
+        this.genre = genre;
+        this.length = length;
         this.albumId = albumId;
-        this.duration = duration;
+        this.albumName = albumName;
     }
 
-    public Song(String title, int albumId, String duration) {
+    public Song(int id, String title, String genre, String length, int albumId, String albumName, boolean archived) {
+        this.id = id;
         this.title = title;
+        this.genre = genre;
+        this.length = length;
         this.albumId = albumId;
-        this.duration = duration;
+        this.albumName = albumName;
+        this.archived = archived;
     }
 
     public int getId() {
         return id;
     }
+
     public void setId(int id) {
         this.id = id;
     }
@@ -38,6 +47,22 @@ public class Song {
         this.title = title;
     }
 
+    public String getGenre() {
+        return genre;
+    }
+
+    public void setGenre(String genre) {
+        this.genre = genre;
+    }
+
+    public String getLength() {
+        return length;
+    }
+
+    public void setLength(String length) {
+        this.length = length;
+    }
+
     public int getAlbumId() {
         return albumId;
     }
@@ -46,12 +71,12 @@ public class Song {
         this.albumId = albumId;
     }
 
-    public String getDuration() {
-        return duration;
+    public String getAlbumName() {
+        return albumName;
     }
 
-    public void setDuration(String duration) {
-        this.duration = duration;
+    public void setAlbumName(String albumName) {
+        this.albumName = albumName;
     }
 
     public boolean isArchived() {
@@ -61,5 +86,4 @@ public class Song {
     public void setArchived(boolean archived) {
         this.archived = archived;
     }
-
 }
